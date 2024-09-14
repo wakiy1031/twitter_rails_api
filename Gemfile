@@ -52,6 +52,8 @@ group :development, :test do
   gem 'devise_token_auth'
   gem 'rack-cors'
   gem 'letter_opener_web'
+
+  gem 'dotenv-rails'
 end
 
 group :development do
