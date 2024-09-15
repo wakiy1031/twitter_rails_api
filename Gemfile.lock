@@ -152,8 +152,11 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.5.9)
+<<<<<<< HEAD
     nokogiri (1.15.3-aarch64-linux)
       racc (~> 1.4)
+=======
+>>>>>>> ce804fc (未ステージの変更分を追加)
     nokogiri (1.15.3-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.15.3-x86_64-linux)
@@ -269,7 +272,10 @@ GEM
     zeitwerk (2.6.8)
 
 PLATFORMS
+<<<<<<< HEAD
   aarch64-linux
+=======
+>>>>>>> ce804fc (未ステージの変更分を追加)
   arm64-darwin-23
   x86_64-linux
 
