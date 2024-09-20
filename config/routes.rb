@@ -9,9 +9,9 @@ Rails.application.routes.draw do
         registrations: 'api/v1/auth/registrations',
         confirmations: 'api/v1/auth/confirmations'
       }
-    end
-    namespace :auth do
-      resources :sessions, only: %i[index]
+      namespace :auth do
+        resources :sessions, only: %i[index]
+      end
     end
   end
 end
