@@ -43,12 +43,12 @@ DeviseTokenAuth.setup do |config|
 
   # Makes it possible to change the headers names
   config.headers_names = {
-    :'authorization' => 'Authorization',
-    :'access-token' => 'access-token',
-    :'client' => 'client',
-    :'expiry' => 'expiry',
-    :'uid' => 'uid',
-    :'token-type' => 'token-type'
+    authorization: 'Authorization',
+    'access-token': 'access-token',
+    client: 'client',
+    expiry: 'expiry',
+    uid: 'uid',
+    'token-type': 'token-type'
   }
 
   # Makes it possible to use custom uid column
@@ -64,5 +64,5 @@ DeviseTokenAuth.setup do |config|
   # send email, set it to true. (This is a setting for compatibility)
   # config.send_confirmation_email = true
 
-  config.default_confirm_success_url = "confirmed"
+  config.default_confirm_success_url = 'http://localhost:3001/signin'
 end
