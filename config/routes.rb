@@ -9,6 +9,7 @@ Rails.application.routes.draw do
         registrations: 'api/v1/auth/registrations',
         confirmations: 'api/v1/auth/confirmations'
       }
+      post 'tweets', to: "posts#create"
       namespace :auth do
         resources :sessions, only: %i[index]
       end
