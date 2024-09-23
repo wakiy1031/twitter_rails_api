@@ -7,7 +7,7 @@ module Api
         protected
 
         def after_confirmation_path_for(_resource_name, _resource)
-          'http://localhost:3001/signin'
+          'http://localhost:3001/login?account_confirmed=true'
         end
 
         def redirect_to(options = {}, response_options = {})
