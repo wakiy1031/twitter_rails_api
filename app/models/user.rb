@@ -12,5 +12,5 @@ class User < ApplicationRecord
   validates :phone, presence: true, format: { with: /\A\d{10}$|^\d{11}\z/ }
   validates :birthdate, presence: true
 
-  has_many :posts
+  has_many :posts, dependent: :destroy
 end
