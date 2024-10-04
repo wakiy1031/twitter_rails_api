@@ -27,7 +27,7 @@ module Api
         post = find_post(params[:post_id])
         return unless post
 
-        blobs = create_and_attach_blobs(post, images)
+        blobs = post.attach_images(images)
 
         if blobs.any?
           render json: { data: blobs }
@@ -46,18 +46,6 @@ module Api
         post = Post.find_by(id: post_id)
         render json: { message: '画像登録先の投稿が見つかりませんでした。' }, status: :unprocessable_entity unless post
         post
-      end
-
-      def create_and_attach_blobs(post, images)
-        images.map do |image|
-          blob = ActiveStorage::Blob.create_and_upload!(
-            io: image,
-            filename: image.original_filename,
-            content_type: image.content_type
-          )
-          post.images.attach(blob.signed_id)
-          blob
-        end
       end
     end
   end

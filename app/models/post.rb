@@ -18,4 +18,16 @@ class Post < ApplicationRecord
       end
     end
   end
+
+  def attach_images(images)
+    images.map do |image|
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: image,
+        filename: image.original_filename,
+        content_type: image.content_type
+      )
+      self.images.attach(blob.signed_id)
+      blob
+    end
+  end
 end
