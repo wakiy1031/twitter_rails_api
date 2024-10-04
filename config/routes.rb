@@ -9,9 +9,11 @@ Rails.application.routes.draw do
         registrations: 'api/v1/auth/registrations',
         confirmations: 'api/v1/auth/confirmations'
       }
-      post 'tweets', to: 'posts#create'
+
+      resources :tweets, only: [:create, :show], controller: 'posts'
+
       post 'images', to: 'posts#upload_images'
-      get 'tweets/:id', to: 'posts#show'
+
       namespace :auth do
         resources :sessions, only: %i[index]
       end
