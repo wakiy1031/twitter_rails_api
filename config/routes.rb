@@ -12,7 +12,11 @@ Rails.application.routes.draw do
 
       resources :tweets, only: %i[create show], controller: 'posts'
 
-      post 'images', to: 'posts#upload_images'
+      resources :images, only: [] do
+        collection do
+          post :create, action: 'upload_images', controller: 'posts'
+        end
+      end
 
       namespace :auth do
         resources :sessions, only: %i[index]
