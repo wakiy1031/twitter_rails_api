@@ -11,3 +11,8 @@ RSpec/MultipleExpectations:
   Max: 2
 Metrics/MethodLength:
   Max: 30
+Hc/RailsSpecificActionName:
+  Exclude:
+    - "app/controllers/api/v1/posts_controller.rb"
+  AllowedNames:
+    - upload_images
