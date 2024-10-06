@@ -10,7 +10,7 @@ Rails.application.routes.draw do
         confirmations: 'api/v1/auth/confirmations'
       }
 
-      resources :tweets, only: %i[create show], controller: 'posts'
+      resources :tweets, only: %i[index create show], controller: 'posts'
 
       resources :images, only: [] do
         collection do
