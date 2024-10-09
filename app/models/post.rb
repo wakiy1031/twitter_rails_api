@@ -16,6 +16,7 @@ class Post < ApplicationRecord
           url: Rails.application.routes.url_helpers.rails_blob_url(image, only_path: true)
         }
       end
+      hash['user'] = user.as_json(only: %i[name])
     end
   end
 
