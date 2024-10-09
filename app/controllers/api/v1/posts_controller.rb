@@ -4,7 +4,7 @@ module Api
   module V1
     class PostsController < ApplicationController
       def index
-        posts = Post.all
+        posts = Post.all.includes(:user).order(created_at: :desc)
 
         render json: posts
       end
