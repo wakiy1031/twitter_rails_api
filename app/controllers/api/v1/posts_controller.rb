@@ -6,7 +6,7 @@ module Api
       def index
         posts = Post.all.includes(:user).order(created_at: :desc)
 
-        render json: posts
+        render json: posts.as_json(methods: :created_at)
       end
 
       def show

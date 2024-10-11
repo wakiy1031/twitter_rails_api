@@ -17,6 +17,7 @@ class Post < ApplicationRecord
         }
       end
       hash['user'] = user.as_json(only: %i[name])
+      hash['created_at'] = ActionController::Base.helpers.time_ago_in_words(created_at) + '前'
     end
   end
 
