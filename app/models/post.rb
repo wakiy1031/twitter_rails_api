@@ -7,17 +7,9 @@ class Post < ApplicationRecord
 
   def as_json(options = {})
     super(options).tap do |hash|
-      hash['images'] = images.map do |image|
-        {
-          id: image.id,
-          filename: image.filename.to_s,
-          content_type: image.content_type,
-          byte_size: image.byte_size,
-          url: Rails.application.routes.url_helpers.rails_blob_url(image, only_path: true)
-        }
-      end
+      hash['images'] = image_data
       hash['user'] = user.as_json(only: %i[name])
-      hash['created_at'] = ActionController::Base.helpers.time_ago_in_words(created_at) + '前'
+      hash['created_at'] = "#{ActionController::Base.helpers.time_ago_in_words(created_at)}前"
     end
   end
 
@@ -30,6 +22,20 @@ class Post < ApplicationRecord
       )
       self.images.attach(blob.signed_id)
       blob
+    end
+  end
+
+  private
+
+  def image_data
+    images.map do |image|
+      {
+        id: image.id,
+        filename: image.filename.to_s,
+        content_type: image.content_type,
+        byte_size: image.byte_size,
+        url: image_url(image)
+      }
     end
   end
 end
