@@ -34,7 +34,7 @@ class Post < ApplicationRecord
         filename: image.filename.to_s,
         content_type: image.content_type,
         byte_size: image.byte_size,
-        url: image_url(image)
+        url: Rails.application.routes.url_helpers.rails_blob_url(image, only_path: true)
       }
     end
   end
