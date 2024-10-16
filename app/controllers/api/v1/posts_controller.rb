@@ -3,6 +3,19 @@
 module Api
   module V1
     class PostsController < ApplicationController
+      def index
+        limit = (params[:limit] || 50).to_i
+        offset = (params[:offset] || 0).to_i
+
+        posts = Post.all
+                    .includes(:user)
+                    .order(created_at: :desc)
+                    .limit(limit)
+                    .offset(offset)
+
+        render json: posts.as_json(methods: :created_at)
+      end
+
       def show
         post = Post.find(params[:id])
         render json: { data: post.as_json(include: { images: { only: %i[id filename content_type byte_size] } }) }
