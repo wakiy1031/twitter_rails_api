@@ -10,6 +10,7 @@ class Post < ApplicationRecord
       hash['images'] = image_data
       hash['user'] = user.as_json(only: %i[name])
       hash['created_at'] = "#{ActionController::Base.helpers.time_ago_in_words(created_at)}前"
+      hash['post_create'] = I18n.l(created_at, format: :post_create)
     end
   end
 
