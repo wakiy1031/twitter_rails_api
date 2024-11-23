@@ -18,6 +18,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :users, only: %i[show], controller: 'users'
+
       namespace :auth do
         resources :sessions, only: %i[index]
       end
