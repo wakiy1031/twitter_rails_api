@@ -202,4 +202,5 @@ ja:
       short: "%m/%d %H:%M"
       start: "%Y年%m月からXを利用しています"
       post: "%H:%M・%Y/%m/%d"
+      post_create: "%p%H:%M · %Y年%-m月%-d日"
     pm: 午後

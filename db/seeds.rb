@@ -26,7 +26,7 @@ users = []
 
   users << user
 
-  5.times do |t|
+  15.times do |t|
     post = user.posts.build(
       content: "テストユーザー#{u + 1}の#{t + 1}個目のツイート"
     )
