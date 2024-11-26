@@ -11,6 +11,10 @@ class User < ApplicationRecord
   validates :email, presence: true, format: { with: /\A[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\z/ }
   validates :phone, presence: true, format: { with: /\A\d{10}$|^\d{11}\z/ }
   validates :birthdate, presence: true
+  validates :user_name, presence: true, on: :update
+  validates :user_name, uniqueness: true, allow_nil: true
 
   has_many :posts, dependent: :destroy
+  has_one_attached :avatar_image
+  has_one_attached :header_image
 end
