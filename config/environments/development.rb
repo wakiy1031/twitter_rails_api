@@ -67,5 +67,13 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
+  # Active Storageの設定を修正
+  config.active_storage.service = :local
+  config.active_storage.resolve_model_to_route = :rails_storage_proxy
+
+  # URLオプションの設定を追加
+  Rails.application.routes.default_url_options[:host] = 'localhost:3001'
+  Rails.application.routes.default_url_options[:protocol] = 'http'
+
   config.hosts << 'localhost:3001'
 end

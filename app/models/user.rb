@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  # Include default devise modules...
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
   include DeviseTokenAuth::Concerns::User
@@ -17,5 +16,17 @@ class User < ApplicationRecord
   has_one_attached :avatar_image
   has_one_attached :header_image
 
-
+  def as_json(options = {})
+    super(options).tap do |hash|
+      if avatar_image.attached?
+        hash['avatar_url'] = Rails.application.routes.url_helpers.rails_storage_proxy_url(
+          avatar_image,
+          only_path: false,
+          host: 'localhost:3000'
+        )
+      else
+        hash['avatar_url'] = nil
+      end
+    end
+  end
 end

@@ -8,7 +8,7 @@ class Post < ApplicationRecord
   def as_json(options = {})
     super(options).tap do |hash|
       hash['images'] = image_data
-      hash['user'] = user.as_json(only: %i[name id user_name place description website email])
+      hash['user'] = user.as_json(only: %i[name id user_name place description website email avatar_url])
       hash['created_at'] = "#{ActionController::Base.helpers.time_ago_in_words(created_at)}前"
       hash['post_create'] = I18n.l(created_at, format: :post_create)
     end
