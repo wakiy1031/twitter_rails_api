@@ -14,6 +14,7 @@ module Api
           posts_count: user.posts.count,
           tweets: user.posts.order(created_at: :desc),
           avatar_url: user.avatar_image.attached? ? url_for(user.avatar_image) : nil,
+          header_image_url: user.header_image.attached? ? url_for(user.header_image) : nil,
           is_self: user.id == current_api_v1_user&.id
         }, status: :ok
       rescue ActiveRecord::RecordNotFound
@@ -21,18 +22,19 @@ module Api
       end
 
       def update_profile
+        # 画像の削除処理
+        if params[:user][:remove_header_image] == "true"
+          current_api_v1_user.header_image.purge if current_api_v1_user.header_image.attached?
+        end
+
+        # アバター画像の削除処理
+        if params[:user][:remove_avatar_image] == "true"
+          current_api_v1_user.avatar_image.purge if current_api_v1_user.avatar_image.attached?
+        end
+
+        # 新しい画像のアップロードを含む通常の更新処理
         if current_api_v1_user.update(user_params)
-          render json: {
-            name: current_api_v1_user.name,
-            email: current_api_v1_user.email,
-            user_name: current_api_v1_user.user_name,
-            place: current_api_v1_user.place,
-            description: current_api_v1_user.description,
-            website: current_api_v1_user.website,
-            id: current_api_v1_user.id,
-            avatar_url: current_api_v1_user.avatar_image.attached? ? url_for(current_api_v1_user.avatar_image) : nil,
-            is_self: true
-          }
+          render json: user_response_json(current_api_v1_user)
         else
           render json: { errors: current_api_v1_user.errors }, status: :unprocessable_entity
         end
@@ -41,7 +43,30 @@ module Api
       private
 
       def user_params
-        params.require(:user).permit(:name, :user_name, :description, :place, :website, :header_image, :avatar_image)
+        params.require(:user).permit(
+          :name,
+          :user_name,
+          :description,
+          :place,
+          :website,
+          :header_image,
+          :avatar_image
+        )
+      end
+
+      def user_response_json(user)
+        {
+          name: user.name,
+          email: user.email,
+          user_name: user.user_name,
+          place: user.place,
+          description: user.description,
+          website: user.website,
+          id: user.id,
+          avatar_url: user.avatar_image.attached? ? url_for(user.avatar_image) : nil,
+          header_image_url: user.header_image.attached? ? url_for(user.header_image) : nil,
+          is_self: true
+        }
       end
     end
   end

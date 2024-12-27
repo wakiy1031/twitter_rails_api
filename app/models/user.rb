@@ -27,6 +27,16 @@ class User < ApplicationRecord
       else
         hash['avatar_url'] = nil
       end
+
+      if header_image.attached?
+        hash['header_image_url'] = Rails.application.routes.url_helpers.rails_storage_proxy_url(
+          header_image,
+          only_path: false,
+          host: 'localhost:3000'
+        )
+      else
+        hash['header_image_url'] = nil
+      end
     end
   end
 end
