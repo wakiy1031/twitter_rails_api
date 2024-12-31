@@ -15,7 +15,8 @@ module Api
           tweets: user.posts.order(created_at: :desc),
           avatar_url: user.avatar_image.attached? ? url_for(user.avatar_image) : nil,
           header_image_url: user.header_image.attached? ? url_for(user.header_image) : nil,
-          is_self: user.id == current_api_v1_user&.id
+          is_self: user.id == current_api_v1_user&.id,
+          created_at: user.created_at.strftime("%Y年%-m月")
         }, status: :ok
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'ユーザーが見つかりません' }, status: :not_found
