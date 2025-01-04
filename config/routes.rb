@@ -18,6 +18,10 @@ Rails.application.routes.draw do
         end
       end
 
+      patch 'profile', to: 'users#update_profile'
+
+      resources :users, only: %i[show], controller: 'users'
+
       namespace :auth do
         resources :sessions, only: %i[index]
       end

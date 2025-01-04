@@ -16,3 +16,12 @@ Hc/RailsSpecificActionName:
     - "app/controllers/api/v1/posts_controller.rb"
   AllowedNames:
     - upload_images
+  ActionNames:
+    - create
+    - destroy
+    - edit
+    - index
+    - new
+    - show
+    - update
+    - update_profile
