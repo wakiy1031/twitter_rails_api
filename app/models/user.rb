@@ -18,25 +18,26 @@ class User < ApplicationRecord
 
   def as_json(options = {})
     super(options).tap do |hash|
-      if avatar_image.attached?
-        hash['avatar_url'] = Rails.application.routes.url_helpers.rails_storage_proxy_url(
-          avatar_image,
-          only_path: false,
-          host: 'localhost:3000'
-        )
-      else
-        hash['avatar_url'] = nil
-      end
-
-      if header_image.attached?
-        hash['header_image_url'] = Rails.application.routes.url_helpers.rails_storage_proxy_url(
-          header_image,
-          only_path: false,
-          host: 'localhost:3000'
-        )
-      else
-        hash['header_image_url'] = nil
-      end
+      hash.merge!(attachment_urls)
     end
+  end
+
+  private
+
+  def attachment_urls
+    {
+      'avatar_url' => generate_attachment_url(avatar_image),
+      'header_image_url' => generate_attachment_url(header_image)
+    }
+  end
+
+  def generate_attachment_url(attachment)
+    return unless attachment.attached?
+
+    Rails.application.routes.url_helpers.rails_storage_proxy_url(
+      attachment,
+      only_path: false,
+      host: 'localhost:3000'
+    )
   end
 end

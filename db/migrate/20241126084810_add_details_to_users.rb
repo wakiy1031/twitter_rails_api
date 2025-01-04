@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 class AddDetailsToUsers < ActiveRecord::Migration[7.0]
   def change
-    add_column :users, :description, :text
-    add_column :users, :place, :string
-    add_column :users, :website, :string
-    add_column :users, :user_name, :string
+    change_table :users, bulk: true do |t|
+      t.text :description
+      t.string :place
+      t.string :website
+      t.string :user_name
+    end
     add_index :users, :user_name, unique: true
   end
 end
