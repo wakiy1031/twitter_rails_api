@@ -4,6 +4,7 @@ class Post < ApplicationRecord
   belongs_to :user
   has_many_attached :images
   validates :content, presence: true, length: { maximum: 140 }
+  has_many :comments, dependent: :destroy
 
   def as_json(options = {})
     super(options).tap do |hash|
