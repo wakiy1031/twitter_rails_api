@@ -49,6 +49,14 @@ module Api
         end
       end
 
+      def destroy
+        post = Post.find(params[:id])
+        post.destroy
+        render json: { message: '投稿を削除しました。' }, status: :ok
+      rescue ActiveRecord::RecordNotFound
+        render json: { message: '投稿が見つかりませんでした。' }, status: :not_found
+      end
+
       private
 
       def post_params
