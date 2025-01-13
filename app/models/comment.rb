@@ -14,10 +14,14 @@ class Comment < ApplicationRecord
           filename: image.filename.to_s,
           content_type: image.content_type,
           byte_size: image.byte_size,
-          url: Rails.application.routes.url_helpers.rails_blob_url(image, only_path: true)
+          url: Rails.application.routes.url_helpers.rails_blob_url(
+            image,
+            only_path: true,
+            host: 'localhost:3000'
+          )
         }
       end
-      hash['user'] = user.as_json(only: %i[id name]).merge(
+      hash['user'] = user.as_json(only: %i[id name email]).merge(
         'avatar_url' => user.send(:generate_attachment_url, user.avatar_image),
         'header_image_url' => user.send(:generate_attachment_url, user.header_image)
       )
