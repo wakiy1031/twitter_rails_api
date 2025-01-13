@@ -14,11 +14,16 @@ Rails.application.routes.draw do
         resources :comments, only: %i[index]
       end
 
-      resources :comments, only: %i[create destroy]
+      resources :comments, only: %i[create] do
+        member do
+          post :upload_images
+        end
+      end
 
       resources :images, only: [] do
         collection do
           post :create, action: 'upload_images', controller: 'posts'
+          post :create, action: 'upload_images', controller: 'comments'
         end
       end
 
