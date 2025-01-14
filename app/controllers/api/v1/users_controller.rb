@@ -46,6 +46,34 @@ module Api
           **base_user_attributes(user),
           posts_count: user.posts.count,
           tweets: user.posts.order(created_at: :desc),
+          comments: user.comments.includes(:post, :user).order(created_at: :desc).map { |comment|
+            {
+              id: comment.id,
+              content: comment.content,
+              created_at: "#{ActionController::Base.helpers.time_ago_in_words(comment.created_at)}前",
+              images: comment.images.map do |image|
+                {
+                  id: image.id,
+                  filename: image.filename.to_s,
+                  content_type: image.content_type,
+                  byte_size: image.byte_size,
+                  url: Rails.application.routes.url_helpers.rails_blob_url(
+                    image,
+                    only_path: true,
+                    host: 'localhost:3000'
+                  )
+                }
+              end,
+              post: {
+                id: comment.post.id,
+                content: comment.post.content,
+                created_at: "#{ActionController::Base.helpers.time_ago_in_words(comment.post.created_at)}前",
+                user: comment.post.user.as_json(only: %i[id name]).merge(
+                  'avatar_url' => comment.post.user.send(:generate_attachment_url, comment.post.user.avatar_image)
+                )
+              }
+            }
+          },
           is_self: user.id == current_api_v1_user&.id,
           created_at: user.created_at.strftime('%Y年%-m月')
         }
