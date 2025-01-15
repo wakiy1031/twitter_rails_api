@@ -14,7 +14,7 @@ Rails.application.routes.draw do
         resources :comments, only: %i[index]
       end
 
-      resources :comments, only: %i[create] do
+      resources :comments, only: %i[create destroy] do
         member do
           post :upload_images
         end

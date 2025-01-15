@@ -57,6 +57,11 @@ module Api
       end
 
       def destroy
+        comment = Comment.find(params[:id])
+        comment.destroy
+        render json: { message: 'コメントを削除しました。' }, status: :ok
+      rescue ActiveRecord::RecordNotFound
+        render json: { message: 'コメントが見つかりませんでした。' }, status: :not_found
       end
 
       private
