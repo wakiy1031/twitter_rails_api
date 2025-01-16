@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class CommentsController < ApplicationController
@@ -5,29 +7,7 @@ module Api
 
       def index
         comments = @post.comments.includes(:user).order(created_at: :desc)
-        render json: comments.map { |comment|
-          {
-            id: comment.id,
-            content: comment.content,
-            created_at: "#{ActionController::Base.helpers.time_ago_in_words(comment.created_at)}前",
-            images: comment.images.map do |image|
-              {
-                id: image.id,
-                filename: image.filename.to_s,
-                content_type: image.content_type,
-                byte_size: image.byte_size,
-                url: Rails.application.routes.url_helpers.rails_blob_url(
-                  image,
-                  only_path: true,
-                  host: 'localhost:3000'
-                )
-              }
-            end,
-            user: comment.user.as_json(only: %i[id name email]).merge(
-              'avatar_url' => comment.user.send(:generate_attachment_url, comment.user.avatar_image)
-            )
-          }
-        }
+        render json: format_comments(comments)
       end
 
       def create
@@ -76,6 +56,41 @@ module Api
         render json: { message: '投稿が見つかりませんでした。' }, status: :not_found
       end
 
+      def format_comments(comments)
+        comments.map { |comment| format_comment(comment) }
+      end
+
+      def format_comment(comment)
+        {
+          id: comment.id,
+          content: comment.content,
+          created_at: "#{ActionController::Base.helpers.time_ago_in_words(comment.created_at)}前",
+          images: format_images(comment.images),
+          user: format_user(comment.user)
+        }
+      end
+
+      def format_images(images)
+        images.map do |image|
+          {
+            id: image.id,
+            filename: image.filename.to_s,
+            content_type: image.content_type,
+            byte_size: image.byte_size,
+            url: Rails.application.routes.url_helpers.rails_blob_url(
+              image,
+              only_path: true,
+              host: 'localhost:3000'
+            )
+          }
+        end
+      end
+
+      def format_user(user)
+        user.as_json(only: %i[id name email]).merge(
+          'avatar_url' => user.send(:generate_attachment_url, user.avatar_image)
+        )
+      end
     end
   end
 end

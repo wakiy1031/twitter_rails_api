@@ -1,29 +1,17 @@
+# frozen_string_literal: true
+
 class Comment < ApplicationRecord
   belongs_to :user
   belongs_to :post
   has_many_attached :images
 
   validates :content, presence: true
-  validates :post_id, presence: true
 
   def as_json(options = {})
     super(options).tap do |hash|
-      hash['images'] = images.map do |image|
-        {
-          id: image.id,
-          filename: image.filename.to_s,
-          content_type: image.content_type,
-          byte_size: image.byte_size,
-          url: Rails.application.routes.url_helpers.rails_blob_url(
-            image,
-            only_path: true,
-            host: 'localhost:3000'
-          )
-        }
-      end
-      hash['user'] = user.as_json(only: %i[id name email]).merge(
-        'avatar_url' => user.send(:generate_attachment_url, user.avatar_image),
-        'header_image_url' => user.send(:generate_attachment_url, user.header_image)
+      hash.merge!(
+        images: format_images,
+        user: format_user
       )
     end
   end
@@ -42,15 +30,30 @@ class Comment < ApplicationRecord
 
   private
 
-  def image_data
+  def format_images
     images.map do |image|
       {
         id: image.id,
         filename: image.filename.to_s,
         content_type: image.content_type,
         byte_size: image.byte_size,
-        url: Rails.application.routes.url_helpers.rails_blob_url(image, only_path: true)
+        url: generate_image_url(image)
       }
     end
+  end
+
+  def format_user
+    user.as_json(only: %i[id name email]).merge(
+      'avatar_url' => user.send(:generate_attachment_url, user.avatar_image),
+      'header_image_url' => user.send(:generate_attachment_url, user.header_image)
+    )
+  end
+
+  def generate_image_url(image)
+    Rails.application.routes.url_helpers.rails_blob_url(
+      image,
+      only_path: true,
+      host: 'localhost:3000'
+    )
   end
 end
