@@ -3,6 +3,8 @@
 module Api
   module V1
     class UsersController < ApplicationController
+      include UserResponseFormatter
+
       def show
         user = User.find(params[:id])
         render json: user_show_response(user), status: :ok
@@ -46,6 +48,7 @@ module Api
           **base_user_attributes(user),
           posts_count: user.posts.count,
           tweets: user.posts.order(created_at: :desc),
+          comments: format_user_comments(user),
           is_self: user.id == current_api_v1_user&.id,
           created_at: user.created_at.strftime('%Y年%-m月')
         }

@@ -14,6 +14,7 @@ Metrics/MethodLength:
 Hc/RailsSpecificActionName:
   Exclude:
     - "app/controllers/api/v1/posts_controller.rb"
+    - "app/controllers/api/v1/comments_controller.rb"
   AllowedNames:
     - upload_images
   ActionNames:
@@ -25,3 +26,6 @@ Hc/RailsSpecificActionName:
     - show
     - update
     - update_profile
+Metrics/BlockLength:
+  Exclude:
+    - "config/routes.rb"

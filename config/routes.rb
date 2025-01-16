@@ -10,11 +10,20 @@ Rails.application.routes.draw do
         confirmations: 'api/v1/auth/confirmations'
       }
 
-      resources :tweets, only: %i[index create show destroy], controller: 'posts'
+      resources :tweets, only: %i[index create show destroy], controller: 'posts' do
+        resources :comments, only: %i[index]
+      end
+
+      resources :comments, only: %i[create destroy] do
+        member do
+          post :upload_images
+        end
+      end
 
       resources :images, only: [] do
         collection do
           post :create, action: 'upload_images', controller: 'posts'
+          post :create, action: 'upload_images', controller: 'comments'
         end
       end
 
