@@ -16,7 +16,9 @@ class Post < ApplicationRecord
         created_at: format_created_at,
         post_create: format_post_create,
         comments: format_comments,
-        comments_count: comments.size
+        comments_count: comments.size,
+        repost_count: reposts.size,
+        reposted: options[:current_user]&.reposts&.exists?(post_id: id)
       )
     end
   end

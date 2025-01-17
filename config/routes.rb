@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
       resources :tweets, only: %i[index create show destroy], controller: 'posts' do
         resources :comments, only: %i[index]
-        resources :reposts, only: %i[create destroy]
+        resource :retweets, only: %i[create destroy], controller: 'reposts'
       end
 
       resources :comments, only: %i[create destroy] do
