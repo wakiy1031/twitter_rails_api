@@ -5,6 +5,8 @@ class Post < ApplicationRecord
   has_many_attached :images
   validates :content, presence: true, length: { maximum: 140 }
   has_many :comments, dependent: :destroy
+  has_many :reposts, dependent: :destroy
+  has_many :reposted_posts, through: :reposts, source: :post
 
   def as_json(options = {})
     super(options).tap do |hash|

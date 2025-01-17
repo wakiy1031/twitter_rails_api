@@ -16,6 +16,8 @@ class User < ApplicationRecord
   has_one_attached :avatar_image
   has_one_attached :header_image
   has_many :comments, dependent: :destroy
+  has_many :reposts, dependent: :destroy
+  has_many :reposted_posts, through: :reposts, source: :post
 
   def as_json(options = {})
     super(options).tap do |hash|
