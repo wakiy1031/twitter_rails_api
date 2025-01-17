@@ -9,7 +9,8 @@ module Api
         if repost.save
           render json: {
             message: 'リポストしました。',
-            repost_count: @post.reposts.count
+            repost_count: @post.reposts.count,
+            reposted: true
           }, status: :created
         else
           render json: {
@@ -24,7 +25,8 @@ module Api
         repost.destroy
         render json: {
           message: 'リポストを取り消しました。',
-          repost_count: @post.reposts.count
+          repost_count: @post.reposts.count,
+          reposted: false
         }
       rescue ActiveRecord::RecordNotFound
         render json: { message: 'リポストが見つかりません。' }, status: :not_found
