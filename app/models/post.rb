@@ -18,7 +18,7 @@ class Post < ApplicationRecord
         comments: format_comments,
         comments_count: comments.size,
         repost_count: reposts.size,
-        reposted: options[:current_user]&.reposts&.exists?(post_id: id)
+        reposted: options[:current_user].present? ? options[:current_user].reposts.exists?(post_id: id) : false
       )
     end
   end

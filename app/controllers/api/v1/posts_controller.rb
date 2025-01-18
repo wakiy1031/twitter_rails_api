@@ -13,7 +13,10 @@ module Api
                     .limit(limit)
                     .offset(offset)
 
-        render json: posts.as_json(methods: :created_at)
+        render json: posts.as_json(
+          methods: :created_at,
+          current_user: current_api_v1_user
+        )
       end
 
       def show
