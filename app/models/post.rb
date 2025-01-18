@@ -11,14 +11,11 @@ class Post < ApplicationRecord
   def as_json(options = {})
     super(options).tap do |hash|
       hash.merge!(
-        images: image_data,
-        user: format_user,
-        created_at: format_created_at,
-        post_create: format_post_create,
-        comments: format_comments,
-        comments_count: comments.size,
-        repost_count: reposts.size,
-        reposted: options[:current_user].present? ? options[:current_user].reposts.exists?(post_id: id) : false
+        base_post_data.merge(
+          user: format_user,
+          comments: format_comments,
+          reposted: check_reposted(options[:current_user])
+        )
       )
     end
   end
@@ -69,5 +66,19 @@ class Post < ApplicationRecord
         )
       )
     end
+  end
+
+  def base_post_data
+    {
+      images: image_data,
+      created_at: format_created_at,
+      post_create: format_post_create,
+      comments_count: comments.size,
+      repost_count: reposts.size
+    }
+  end
+
+  def check_reposted(current_user)
+    current_user.present? ? current_user.reposts.exists?(post_id: id) : false
   end
 end

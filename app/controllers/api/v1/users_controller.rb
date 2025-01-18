@@ -47,12 +47,7 @@ module Api
         {
           **base_user_attributes(user),
           posts_count: user.posts.count,
-          tweets: user.posts.or(Post.where(id: user.reposts.pluck(:post_id)))
-                    .order(created_at: :desc)
-                    .map { |post|
-                      post.as_json(current_user: current_api_v1_user)
-                        .merge(is_repost: user.reposts.exists?(post: post))
-                    },
+          tweets: format_user_tweets(user),
           comments: format_user_comments(user),
           is_self: user.id == current_api_v1_user&.id,
           created_at: user.created_at.strftime('%Y年%-m月')
@@ -82,6 +77,20 @@ module Api
 
       def attachment_url(attachment)
         attachment.attached? ? url_for(attachment) : nil
+      end
+
+      def format_user_tweets(user)
+        posts = user.posts.or(Post.where(id: user.reposts.pluck(:post_id)))
+                    .order(created_at: :desc)
+
+        posts.map do |post|
+          format_tweet(post, user)
+        end
+      end
+
+      def format_tweet(post, user)
+        post.as_json(current_user: current_api_v1_user)
+            .merge(is_repost: user.reposts.exists?(post:))
       end
     end
   end

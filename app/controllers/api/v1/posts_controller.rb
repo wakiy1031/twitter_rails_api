@@ -21,7 +21,9 @@ module Api
 
       def show
         post = Post.find(params[:id])
-        render json: { data: post.as_json(current_user: current_api_v1_user, include: { images: { only: %i[id filename content_type byte_size] } }) }
+        render json: { data: post.as_json(current_user: current_api_v1_user,
+                                          include: { images: { only: %i[id
+                                                                        filename content_type byte_size] } }) }
       rescue ActiveRecord::RecordNotFound
         render json: { message: '投稿が見つかりませんでした。' }, status: :not_found
       end
