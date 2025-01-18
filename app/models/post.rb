@@ -5,16 +5,17 @@ class Post < ApplicationRecord
   has_many_attached :images
   validates :content, presence: true, length: { maximum: 140 }
   has_many :comments, dependent: :destroy
+  has_many :reposts, dependent: :destroy
+  has_many :reposted_posts, through: :reposts, source: :post
 
   def as_json(options = {})
     super(options).tap do |hash|
       hash.merge!(
-        images: image_data,
-        user: format_user,
-        created_at: format_created_at,
-        post_create: format_post_create,
-        comments: format_comments,
-        comments_count: comments.size
+        base_post_data.merge(
+          user: format_user,
+          comments: format_comments,
+          reposted: check_reposted(options[:current_user])
+        )
       )
     end
   end
@@ -65,5 +66,19 @@ class Post < ApplicationRecord
         )
       )
     end
+  end
+
+  def base_post_data
+    {
+      images: image_data,
+      created_at: format_created_at,
+      post_create: format_post_create,
+      comments_count: comments.size,
+      repost_count: reposts.size
+    }
+  end
+
+  def check_reposted(current_user)
+    current_user.present? ? current_user.reposts.exists?(post_id: id) : false
   end
 end
