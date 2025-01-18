@@ -18,6 +18,8 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :reposts, dependent: :destroy
   has_many :reposted_posts, through: :reposts, source: :post
+  has_many :favorites, dependent: :destroy
+  has_many :favorited_posts, through: :favorites, source: :post
 
   def as_json(options = {})
     super(options).tap do |hash|
