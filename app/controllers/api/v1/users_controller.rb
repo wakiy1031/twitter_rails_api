@@ -50,7 +50,8 @@ module Api
           tweets: format_user_tweets(user),
           comments: format_user_comments(user),
           is_self: user.id == current_api_v1_user&.id,
-          created_at: user.created_at.strftime('%Y年%-m月')
+          created_at: user.created_at.strftime('%Y年%-m月'),
+          favorites: format_user_favorites(user)
         }
       end
 
@@ -89,8 +90,21 @@ module Api
       end
 
       def format_tweet(post, user)
+        repost = user.reposts.find_by(post: post)
         post.as_json(current_user: current_api_v1_user)
-            .merge(is_repost: user.reposts.exists?(post:))
+            .merge(
+              is_repost: repost.present?,
+              reposted_at: repost&.created_at
+            )
+      end
+
+      def format_user_favorites(user)
+        user.favorites
+            .includes(post: [:user, :comments, :favorites, :reposts, images_attachments: :blob])
+            .order(created_at: :desc)
+            .map do |favorite|
+              favorite.post.as_json(current_user: current_api_v1_user)
+            end
       end
     end
   end
