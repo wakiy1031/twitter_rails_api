@@ -7,6 +7,8 @@ class Post < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :reposts, dependent: :destroy
   has_many :reposted_posts, through: :reposts, source: :post
+  has_many :favorites, dependent: :destroy
+  has_many :favorited_posts, through: :favorites, source: :post
 
   def as_json(options = {})
     super(options).tap do |hash|
@@ -14,7 +16,8 @@ class Post < ApplicationRecord
         base_post_data.merge(
           user: format_user,
           comments: format_comments,
-          reposted: check_reposted(options[:current_user])
+          reposted: check_reposted(options[:current_user]),
+          favorited: check_favorited(options[:current_user])
         )
       )
     end
@@ -74,11 +77,16 @@ class Post < ApplicationRecord
       created_at: format_created_at,
       post_create: format_post_create,
       comments_count: comments.size,
-      repost_count: reposts.size
+      repost_count: reposts.size,
+      favorite_count: favorites.size
     }
   end
 
   def check_reposted(current_user)
     current_user.present? ? current_user.reposts.exists?(post_id: id) : false
+  end
+
+  def check_favorited(current_user)
+    current_user.present? ? current_user.favorites.exists?(post_id: id) : false
   end
 end
