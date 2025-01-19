@@ -90,7 +90,7 @@ module Api
       end
 
       def format_tweet(post, user)
-        repost = user.reposts.find_by(post: post)
+        repost = user.reposts.find_by(post:)
         post.as_json(current_user: current_api_v1_user)
             .merge(
               is_repost: repost.present?,
@@ -100,7 +100,7 @@ module Api
 
       def format_user_favorites(user)
         user.favorites
-            .includes(post: [:user, :comments, :favorites, :reposts, images_attachments: :blob])
+            .includes(post: [:user, :comments, :favorites, :reposts, { images_attachments: :blob }])
             .order(created_at: :desc)
             .map do |favorite|
               favorite.post.as_json(current_user: current_api_v1_user)
