@@ -47,6 +47,9 @@ module Api
         {
           **base_user_attributes(user),
           posts_count: user.posts.count,
+          followers_count: user.followers.count,
+          following_count: user.following.count,
+          is_following: current_api_v1_user&.following?(user),
           tweets: format_user_tweets(user),
           comments: format_user_comments(user),
           is_self: user.id == current_api_v1_user&.id,
