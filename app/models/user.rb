@@ -48,10 +48,16 @@ class User < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options).tap do |hash|
-      hash.merge!(attachment_urls)
+  super(options.except(:current_user)).tap do |hash|
+    hash.merge!(attachment_urls)
+    if options[:current_user].present?
+      hash.merge!(
+        is_following: options[:current_user].following?(self),
+        is_self: options[:current_user] == self
+      )
     end
   end
+end
 
   private
 
