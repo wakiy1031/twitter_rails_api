@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class FollowsController < ApplicationController
@@ -5,7 +7,10 @@ module Api
       before_action :set_user
 
       def create
-        return render json: { error: '自分自身をフォローすることはできません' }, status: :unprocessable_entity if @user == current_api_v1_user
+        if @user == current_api_v1_user
+          return render json: { error: '自分自身をフォローすることはできません' },
+                        status: :unprocessable_entity
+        end
 
         if current_api_v1_user.follow(@user)
           render json: { message: 'フォローしました' }, status: :ok

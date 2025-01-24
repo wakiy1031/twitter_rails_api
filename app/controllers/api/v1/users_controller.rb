@@ -4,6 +4,9 @@ module Api
   module V1
     class UsersController < ApplicationController
       include UserResponseFormatter
+      include TweetResponseFormatter
+      include UserStatsFormatter
+      include UserAttributesFormatter
 
       def show
         user = User.find(params[:id])
@@ -46,15 +49,10 @@ module Api
       def user_show_response(user)
         {
           **base_user_attributes(user),
-          posts_count: user.posts.count,
-          followers_count: user.followers.count,
-          following_count: user.following.count,
-          is_following: current_api_v1_user&.following?(user),
-          tweets: format_user_tweets(user),
-          comments: format_user_comments(user),
+          **user_stats(user),
+          **user_content(user),
           is_self: user.id == current_api_v1_user&.id,
-          created_at: user.created_at.strftime('%Y年%-m月'),
-          favorites: format_user_favorites(user)
+          created_at: user.created_at.strftime('%Y年%-m月')
         }
       end
 
@@ -63,51 +61,6 @@ module Api
           **base_user_attributes(user),
           is_self: true
         }
-      end
-
-      def base_user_attributes(user)
-        {
-          name: user.name,
-          email: user.email,
-          user_name: user.user_name,
-          place: user.place,
-          description: user.description,
-          website: user.website,
-          id: user.id,
-          avatar_url: attachment_url(user.avatar_image),
-          header_image_url: attachment_url(user.header_image)
-        }
-      end
-
-      def attachment_url(attachment)
-        attachment.attached? ? url_for(attachment) : nil
-      end
-
-      def format_user_tweets(user)
-        posts = user.posts.or(Post.where(id: user.reposts.pluck(:post_id)))
-                    .order(created_at: :desc)
-
-        posts.map do |post|
-          format_tweet(post, user)
-        end
-      end
-
-      def format_tweet(post, user)
-        repost = user.reposts.find_by(post:)
-        post.as_json(current_user: current_api_v1_user)
-            .merge(
-              is_repost: repost.present?,
-              reposted_at: repost&.created_at
-            )
-      end
-
-      def format_user_favorites(user)
-        user.favorites
-            .includes(post: [:user, :comments, :favorites, :reposts, { images_attachments: :blob }])
-            .order(created_at: :desc)
-            .map do |favorite|
-              favorite.post.as_json(current_user: current_api_v1_user)
-            end
       end
     end
   end

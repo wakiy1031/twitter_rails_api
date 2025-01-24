@@ -11,18 +11,18 @@ class Post < ApplicationRecord
   has_many :favorited_posts, through: :favorites, source: :post
 
   def as_json(options = {})
-  @options = options  # インスタンス変数にoptionsを保存
-  super(options.except(:current_user)).tap do |hash|
-    hash.merge!(
-      base_post_data.merge(
-        user: format_user,
-        comments: format_comments,
-        reposted: check_reposted(options[:current_user]),
-        favorited: check_favorited(options[:current_user])
+    @options = options # インスタンス変数にoptionsを保存
+    super(options.except(:current_user)).tap do |hash|
+      hash.merge!(
+        base_post_data.merge(
+          user: format_user,
+          comments: format_comments,
+          reposted: check_reposted(options[:current_user]),
+          favorited: check_favorited(options[:current_user])
+        )
       )
-    )
+    end
   end
-end
 
   def attach_images(images)
     images.map do |image|
@@ -53,13 +53,12 @@ end
   def format_user
     user.as_json(
       only: %i[name id user_name place description website email avatar_url],
-      current_user: options[:current_user]  # ここでoptionsを渡す
+      current_user: options[:current_user] # ここでoptionsを渡す
     )
   end
 
-
   def options
-    @options ||= {}  # インスタンス変数としてoptionsを保持
+    @options ||= {} # インスタンス変数としてoptionsを保持
   end
 
   def format_created_at
