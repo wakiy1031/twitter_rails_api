@@ -5,7 +5,9 @@ class Comment < ApplicationRecord
   belongs_to :post
   has_many_attached :images
 
-  validates :content, presence: true
+  validates :content, presence: true, length: { maximum: 140 }
+
+  after_create :create_notification
 
   def as_json(options = {})
     super(options).tap do |hash|
@@ -29,6 +31,18 @@ class Comment < ApplicationRecord
   end
 
   private
+
+  def create_notification
+    # 自分の投稿に対する他人のコメントの場合のみ通知を作成
+    return if user_id == post.user_id # 自分の投稿へのコメント
+    return if post.user_id != user_id # 他人の投稿へのコメント
+
+    Notification.create!(
+      recipient: post.user,
+      notifiable: self,
+      action: 'comment'
+    )
+  end
 
   def format_images
     images.map do |image|

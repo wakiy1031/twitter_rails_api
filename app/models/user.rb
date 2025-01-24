@@ -21,6 +21,9 @@ class User < ApplicationRecord
   has_many :favorites, dependent: :destroy
   has_many :favorited_posts, through: :favorites, source: :post
 
+  # 通知関連
+  has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
+
   # フォロー関連
   has_many :active_relationships, class_name: 'Relationship',
                                   foreign_key: 'follower_id',
