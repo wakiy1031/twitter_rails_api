@@ -31,7 +31,12 @@ Rails.application.routes.draw do
 
       patch 'profile', to: 'users#update_profile'
 
-      resources :users, only: %i[show], controller: 'users'
+      resources :users, only: %i[show], controller: 'users' do
+        member do
+          post 'follow', to: 'follows#create'
+          delete 'unfollow', to: 'follows#destroy'
+        end
+      end
 
       namespace :auth do
         resources :sessions, only: %i[index]
