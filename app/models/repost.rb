@@ -13,7 +13,6 @@ class Repost < ApplicationRecord
   def create_notification
     # 自分の投稿に対する他人のリポストの場合のみ通知を作成
     return if user_id == post.user_id # 自分の投稿へのリポスト
-    return if post.user_id != user_id # 他人の投稿へのリポスト
 
     Notification.create!(
       recipient: post.user,

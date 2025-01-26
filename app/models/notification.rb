@@ -6,21 +6,8 @@ class Notification < ApplicationRecord
 
   validates :action, presence: true
 
-  scope :unread, -> { where(read_at: nil) }
   scope :recent, -> { order(created_at: :desc) }
 
-  VALID_ACTIONS = %w[like follow comment].freeze
+  VALID_ACTIONS = %w[like follow comment repost].freeze
   validates :action, inclusion: { in: VALID_ACTIONS }
-
-  def mark_as_read!
-    update!(read_at: Time.current)
-  end
-
-  def read?
-    read_at.present?
-  end
-
-  def self.mark_as_read_by_recipient(recipient)
-    where(recipient: recipient, read_at: nil).update_all(read_at: Time.current)
-  end
 end
