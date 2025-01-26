@@ -38,6 +38,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :notifications, only: %i[index]
+
       namespace :auth do
         resources :sessions, only: %i[index]
       end
