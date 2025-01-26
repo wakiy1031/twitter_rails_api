@@ -11,6 +11,6 @@ class CreateNotifications < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_index :notifications, [:recipient_id, :read_at]
+    add_index :notifications, %i[recipient_id read_at]
   end
 end

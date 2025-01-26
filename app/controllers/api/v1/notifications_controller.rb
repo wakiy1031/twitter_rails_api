@@ -7,8 +7,8 @@ module Api
 
       def index
         notifications = current_api_v1_user.notifications
-                                         .recent
-                                         .includes(notifiable: [:user, :post])
+                                           .recent
+                                           .includes(notifiable: %i[user post])
         render json: notifications.map { |notification| format_notification(notification) }
       end
 
