@@ -51,7 +51,7 @@ Rails.application.routes.draw do
       end
 
       resources :groups, only: [:index, :show, :create] do
-        resources :messages, only: [:create], controller: 'group_messages'
+        resources :messages, only: [:index, :create], controller: 'group_messages'
       end
     end
   end

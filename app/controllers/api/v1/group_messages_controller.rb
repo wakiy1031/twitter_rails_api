@@ -7,6 +7,22 @@ module Api
       before_action :set_group
       before_action :ensure_group_member
 
+      def index
+        messages = @group.messages.includes(:user).order(created_at: :desc)
+        render json: messages.map { |message|
+          {
+            id: message.id,
+            content: message.content,
+            created_at: message.created_at,
+            user: {
+              id: message.user.id,
+              name: message.user.name,
+              avatar_url: message.user.avatar_image.attached? ? url_for(message.user.avatar_image) : nil
+            }
+          }
+        }
+      end
+
       def create
         message = @group.messages.build(message_params)
         message.user = current_api_v1_user
