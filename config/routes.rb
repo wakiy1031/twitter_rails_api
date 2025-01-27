@@ -40,6 +40,8 @@ Rails.application.routes.draw do
 
       resources :notifications, only: %i[index]
 
+      resources :groups, only: %i[create]
+
       namespace :auth do
         resources :sessions, only: %i[index]
       end
