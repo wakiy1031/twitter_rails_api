@@ -45,6 +45,14 @@ Rails.application.routes.draw do
       namespace :auth do
         resources :sessions, only: %i[index]
       end
+
+      resources :rooms, only: [:index, :show, :create] do
+        resources :messages, only: [:create]
+      end
+
+      resources :groups, only: [:index, :show, :create] do
+        resources :messages, only: [:create], controller: 'group_messages'
+      end
     end
   end
 end
