@@ -44,8 +44,8 @@ Rails.application.routes.draw do
         resources :sessions, only: %i[index]
       end
 
-      resources :rooms, only: [:index, :show, :create] do
-        resources :messages, only: [:index, :create]
+      resources :rooms, only: %i[index show create] do
+        resources :messages, only: %i[index create]
       end
     end
   end
