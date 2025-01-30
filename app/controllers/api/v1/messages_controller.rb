@@ -2,18 +2,17 @@
 
 module Api
   module V1
-    class GroupMessagesController < ApplicationController
+    class MessagesController < ApplicationController
       before_action :authenticate_api_v1_user!
-      before_action :set_group
-      before_action :ensure_group_member
+      before_action :set_room
 
       def index
-        messages = @group.messages.includes(:user).order(created_at: :desc)
+        messages = @room.messages.includes(:user).order(created_at: :desc)
         render json: messages.map { |message|
           {
             id: message.id,
             content: message.content,
-            created_at: message.created_at,
+            created_at: message.created_at.strftime('%Y年%m月%d日 %H:%M'),
             user: {
               id: message.user.id,
               name: message.user.name,
@@ -24,14 +23,14 @@ module Api
       end
 
       def create
-        message = @group.messages.build(message_params)
+        message = @room.messages.build(message_params)
         message.user = current_api_v1_user
 
         if message.save
           render json: {
             id: message.id,
             content: message.content,
-            created_at: message.created_at,
+            created_at: message.created_at.strftime('%Y年%m月%d日 %H:%M'),
             user: {
               id: message.user.id,
               name: message.user.name,
@@ -45,16 +44,10 @@ module Api
 
       private
 
-      def set_group
-        @group = Room.where(group: true).find(params[:group_id])
+      def set_room
+        @room = current_api_v1_user.rooms.find(params[:room_id])
       rescue ActiveRecord::RecordNotFound
-        render json: { error: 'グループが見つかりません' }, status: :not_found
-      end
-
-      def ensure_group_member
-        unless @group.users.include?(current_api_v1_user)
-          render json: { error: 'グループのメンバーではありません' }, status: :forbidden
-        end
+        render json: { error: 'チャットルームが見つかりません' }, status: :not_found
       end
 
       def message_params

@@ -31,7 +31,7 @@ Rails.application.routes.draw do
 
       patch 'profile', to: 'users#update_profile'
 
-      resources :users, only: %i[show], controller: 'users' do
+      resources :users, only: %i[index show], controller: 'users' do
         member do
           post 'follow', to: 'follows#create'
           delete 'unfollow', to: 'follows#destroy'
@@ -40,18 +40,12 @@ Rails.application.routes.draw do
 
       resources :notifications, only: %i[index]
 
-      resources :groups, only: %i[create]
-
       namespace :auth do
         resources :sessions, only: %i[index]
       end
 
       resources :rooms, only: [:index, :show, :create] do
-        resources :messages, only: [:create]
-      end
-
-      resources :groups, only: [:index, :show, :create] do
-        resources :messages, only: [:index, :create], controller: 'group_messages'
+        resources :messages, only: [:index, :create]
       end
     end
   end
