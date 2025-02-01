@@ -20,6 +20,8 @@ class User < ApplicationRecord
   has_many :reposted_posts, through: :reposts, source: :post
   has_many :favorites, dependent: :destroy
   has_many :favorited_posts, through: :favorites, source: :post
+  has_many :bookmarks, dependent: :destroy
+  has_many :bookmarked_posts, through: :bookmarks, source: :post
 
   # 通知関連
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy, inverse_of: :recipient
