@@ -9,6 +9,10 @@ class Post < ApplicationRecord
   has_many :reposted_posts, through: :reposts, source: :post
   has_many :favorites, dependent: :destroy
   has_many :favorited_posts, through: :favorites, source: :post
+  has_many :favorited_users, through: :favorites, source: :user
+  has_many :reposted_users, through: :reposts, source: :user
+  has_many :bookmarks, dependent: :destroy
+  has_many :bookmarked_users, through: :bookmarks, source: :user
 
   def as_json(options = {})
     @options = options # インスタンス変数にoptionsを保存
@@ -18,7 +22,8 @@ class Post < ApplicationRecord
           user: format_user,
           comments: format_comments,
           reposted: check_reposted(options[:current_user]),
-          favorited: check_favorited(options[:current_user])
+          favorited: check_favorited(options[:current_user]),
+          bookmarked: check_bookmarked(options[:current_user])
         )
       )
     end
@@ -96,5 +101,9 @@ class Post < ApplicationRecord
 
   def check_favorited(current_user)
     current_user.present? ? current_user.favorites.exists?(post_id: id) : false
+  end
+
+  def check_bookmarked(current_user)
+    current_user.present? ? current_user.bookmarks.exists?(post_id: id) : false
   end
 end

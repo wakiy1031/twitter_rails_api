@@ -30,7 +30,11 @@ module RoomResponseFormatter
     {
       id: user.id,
       name: user.name,
-      avatar_url: user.avatar_image.attached? ? url_for(user.avatar_image) : nil
+      avatar_url: user.avatar_image.attached? ? url_for(user.avatar_image) : nil,
+      email: user.email,
+      followers_count: user.followers.count,
+      created_at: user.created_at.strftime('%Y年%m月'),
+      description: user.description
     }
   end
 
