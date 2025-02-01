@@ -4,12 +4,12 @@ module Api
   module V1
     class BookmarksController < ApplicationController
       before_action :authenticate_api_v1_user!
-      before_action :set_post, only: [:create, :destroy]
+      before_action :set_post, only: %i[create destroy]
 
       def index
         bookmarks = current_api_v1_user.bookmarked_posts
-                                      .includes(:user, :comments, :favorites, :reposts, images_attachments: :blob)
-                                      .order('bookmarks.created_at DESC')
+                                       .includes(:user, :comments, :favorites, :reposts, images_attachments: :blob)
+                                       .order('bookmarks.created_at DESC')
 
         render json: bookmarks.map { |post| post.as_json(current_user: current_api_v1_user) }
       end
