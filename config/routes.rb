@@ -14,6 +14,7 @@ Rails.application.routes.draw do
         resources :comments, only: %i[index]
         resource :retweets, only: %i[create destroy], controller: 'reposts'
         resource :favorites, only: %i[create destroy], controller: 'favorites'
+        resource :bookmarks, only: %i[create destroy]
       end
 
       resources :comments, only: %i[create destroy] do
@@ -39,6 +40,7 @@ Rails.application.routes.draw do
       end
 
       resources :notifications, only: %i[index]
+      resources :bookmarks, only: %i[index]
 
       namespace :auth do
         resources :sessions, only: %i[index]
